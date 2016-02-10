@@ -1,0 +1,20 @@
+#ifndef PAGE_REC_ITER_C
+#define PAGE_REC_ITER_C
+#include "MyDB_PageRecIterator.h"
+
+using namespace std;
+
+MyDB_PageRecIter :: MyDB_PageRecIter(MyDB_RecordPtr rp,MyDB_PageReaderWriter* rw){
+	pagerw = rw;
+	recordSize = rp ->getBinarySize();
+	pageSize = rw -> bufferMgrPtr ->getPageSize();
+	currentloc = rp->fromBinary(ph->getBytes());
+};
+
+void MyDB_PageRecIter :: getNext (){
+	currentloc = recordPtr->fromBinary(currentloc);
+}
+
+bool MyDB_RecordIterator :: hasNext(){
+	return true;
+}
