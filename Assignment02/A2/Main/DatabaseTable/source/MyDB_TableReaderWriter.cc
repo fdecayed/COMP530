@@ -11,6 +11,7 @@ using namespace std;
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tp, MyDB_BufferManagerPtr bp) {
 	buffermgrPtr = bp;
 	tablePtr = tp;
+
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t) {
@@ -35,6 +36,7 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string) {
 }
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr) {
+shared_from_this();
 	return nullptr;
 }
 
