@@ -42,4 +42,9 @@ private:
 
 };
 
+class PageStuff{
+
+
+};
+
 #endif
