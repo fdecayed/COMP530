@@ -5,7 +5,7 @@
 
 using namespace std;
 
-MyDB_PageRecIter :: MyDB_PageRecIter(MyDB_RecordPtr rp,MyDB_PageReaderWriter* rw){
+MyDB_PageRecIter :: MyDB_PageRecIter(MyDB_RecordPtr rp, MyDB_PageReaderWriter* rw){
 	pagerw = rw;
 	recordPtr = rp;
 	recordSize = rp ->getBinarySize();
