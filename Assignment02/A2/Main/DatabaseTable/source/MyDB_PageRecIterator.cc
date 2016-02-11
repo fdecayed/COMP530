@@ -1,5 +1,6 @@
 #ifndef PAGE_REC_ITER_C
 #define PAGE_REC_ITER_C
+
 #include "MyDB_PageRecIterator.h"
 
 using namespace std;
@@ -20,3 +21,5 @@ void MyDB_PageRecIter :: getNext (){
 bool MyDB_RecordIterator :: hasNext(){
 	return true;
 }
+
+#endif

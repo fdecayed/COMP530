@@ -4,6 +4,7 @@
 
 #include "MyDB_PageType.h"
 #include "MyDB_TableReaderWriter.h"
+#include "MyDB_PageRecIterator.h"
 
 class MyDB_PageReaderWriter {
 

@@ -14,7 +14,7 @@ class MyDB_PageReaderWriter;
 class MyDB_TableReaderWriter;
 typedef shared_ptr <MyDB_TableReaderWriter> MyDB_TableReaderWriterPtr;
 
-class MyDB_TableReaderWriter {
+class MyDB_TableReaderWriter : public enable_shared_from_this<MyDB_TableReaderWriter>{
 
 public:
 
@@ -52,7 +52,7 @@ private:
 	// ANYTHING YOU NEED HERE
     MyDB_BufferManagerPtr buffermgrPtr;
     MyDB_TablePtr tablePtr;
-    vector<MyDBPageReaderWriter> pageRWs;
+    vector<MyDB_PageReaderWriter> pageRWs;
 };
 
 #endif

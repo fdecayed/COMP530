@@ -3,9 +3,10 @@
 #define TABLE_RW_C
 
 #include <fstream>
+#include <memory>
 #include "MyDB_PageReaderWriter.h"
 #include "MyDB_TableReaderWriter.h"
-
+#include "MyDB_TableRecIterator.h"
 using namespace std;
 
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tp, MyDB_BufferManagerPtr bp) {
@@ -50,7 +51,7 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string fromMe) {
 }
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr record) {
-  return make_shared<MyDB_RecordIterator>(shared_from_this(),record);
+  return make_shared<MyDB_TableRecIter>(shared_from_this(),record);
 }
 
 void MyDB_TableReaderWriter :: writeIntoTextFile (string) {

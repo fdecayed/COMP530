@@ -17,7 +17,7 @@ class MyDB_TableRecIter : public MyDB_RecordIterator{
  private:
   MyDB_TableReaderWriterPtr parent;
   int curPage;
-  MyDB_PageRecIter curIt;
+  MyDB_RecordIteratorPtr curIt;
   MyDB_RecordPtr record;
 };
 
