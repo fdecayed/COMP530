@@ -1,5 +1,6 @@
 #ifndef PAGE_REC_ITER_C
 #define PAGE_REC_ITER_C
+
 #include "MyDB_PageRecIterator.h"
 
 using namespace std;
@@ -25,3 +26,5 @@ bool MyDB_PageRecIter :: hasNext(){
 	if((pagerw->pagestuff-> numBytesUsed)>(pageSize - sizeof(PageStuff)-currentBytes) ) return true;
 	return false;
 }
+
+#endif

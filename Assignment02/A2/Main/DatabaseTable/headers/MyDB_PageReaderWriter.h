@@ -4,6 +4,7 @@
 
 #include "MyDB_PageType.h"
 #include "MyDB_TableReaderWriter.h"
+#include "MyDB_PageRecIterator.h"
 
 class MyDB_PageReaderWriter {
 
@@ -35,6 +36,7 @@ public:
 
 	MyDB_PageHandle pageHandle;
 	MyDB_BufferManagerPtr bufferMgrPtr;
+
 	MyDB_TableReaderWriter* tablerw;
 	PageStuff* pagestuff;
 
