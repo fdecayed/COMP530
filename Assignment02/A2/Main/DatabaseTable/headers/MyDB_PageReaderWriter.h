@@ -6,6 +6,12 @@
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_PageRecIterator.h"
 
+class PageStuff{
+public:
+	int numBytesUsed;
+	char data[0];
+};
+
 class MyDB_PageReaderWriter {
 
 public:
@@ -45,10 +51,5 @@ private:
 	MyDB_PageType pageType;
 };
 
-class PageStuff{
-public:
-	int numBytesUsed;
-	char data[0];
-};
 
 #endif

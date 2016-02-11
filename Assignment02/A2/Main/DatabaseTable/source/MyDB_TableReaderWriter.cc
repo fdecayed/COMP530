@@ -12,7 +12,7 @@ using namespace std;
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tp, MyDB_BufferManagerPtr bp) {
   buffermgrPtr = bp;
   tablePtr = tp;
-  for(int i=0;i<=tp->lastPage();++i) pageRWs.push_back(MyDB_PageReaderWriter(bp->getPage(tp,i),bp));
+  for(int i=0;i<=tp->lastPage();++i) pageRWs.push_back(MyDB_PageReaderWriter(bp->getPage(tp,i),bp,this));
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t i) {
@@ -31,7 +31,7 @@ MyDB_PageReaderWriter &MyDB_TableReaderWriter :: last () {
 
 void MyDB_TableReaderWriter :: append (MyDB_RecordPtr record) {
   if(last().append(record)) return;
-  MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, *this);
+  MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, this);
   temp.append(record);
   pageRWs.push_back(temp);
 }

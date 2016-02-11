@@ -33,4 +33,5 @@ MyDB_TableRecIter :: MyDB_TableRecIter(MyDB_TableReaderWriterPtr parentPtr,MyDB_
   curIt = (*parent)[curPage].getIterator(record);
 }
 
+MyDB_TableRecIter::~MyDB_TableRecIter(){}
 #endif
