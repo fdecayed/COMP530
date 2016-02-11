@@ -4,6 +4,7 @@
 #include "MyDB_RecordIterator.h"
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_PageReaderWriter.h"
+#include "MyDB_PageRecIterator.h"
 #include "MyDB_Record.h"
 using namespace std;
 
@@ -17,7 +18,7 @@ class MyDB_TableRecIter : public MyDB_RecordIterator{
  private:
   MyDB_TableReaderWriterPtr parent;
   int curPage;
-  MyDB_PageRecIter curIt;
+  MyDB_RecordIteratorPtr curIt;
   MyDB_RecordPtr record;
 };
 

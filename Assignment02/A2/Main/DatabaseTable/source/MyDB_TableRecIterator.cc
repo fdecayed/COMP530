@@ -1,23 +1,27 @@
+
+#ifndef TABLE_REC_ITER_C
+#define TABLE_REC_ITER_C
+
 #include "MyDB_TableRecIterator.h"
 using namespace std;
 
 void MyDB_TableRecIter::getNext(){
-  if(curIt.hasNext()) {
-    curIt.getNext();
+  if(curIt->hasNext()) {
+    curIt->getNext();
     return;
   }
-  else if(&parent[curPage]==&parent.last()) return;
+  else if(&(*parent)[curPage]==&(parent->last())) return;
   else {
     curPage++;
-    curIt=parent[curPage].getIterator(record);
+    curIt=(*parent)[curPage].getIterator(record);
     getNext();
   }
   return;
 }
 
 bool MyDB_TableRecIter::hasNext(){
-  if(curIt.hasNext()) return true;
-  for(int tempPage=curPage+1;&parent[tempPage-1]!=&parent.last();tempPage++) if(parent[tempPage].getIterator(record).hasNext()) retrun true;
+  if(curIt->hasNext()) return true;
+  for(int tempPage=curPage+1;&(*parent)[tempPage-1]!=&parent->last();tempPage++) if((*parent)[tempPage].getIterator(record)->hasNext()) return true;
   return false;
 }
 
@@ -25,6 +29,7 @@ MyDB_TableRecIter :: MyDB_TableRecIter(MyDB_TableReaderWriterPtr parentPtr,MyDB_
   parent = parentPtr;
   record = recordPtr;
   curPage = 0;
-  curIt = parent[curPage].getIterator(record);
+  curIt = (*parent)[curPage].getIterator(record);
 }
 
+#endif

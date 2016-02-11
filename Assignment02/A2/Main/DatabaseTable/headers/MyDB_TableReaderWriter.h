@@ -52,7 +52,7 @@ private:
 	// ANYTHING YOU NEED HERE
     MyDB_BufferManagerPtr buffermgrPtr;
     MyDB_TablePtr tablePtr;
-    vector<MyDBPageReaderWriter> pageRWs;
+    vector<MyDB_PageReaderWriter> pageRWs;
 };
 
 #endif

@@ -31,20 +31,21 @@ public:
 	// sets the type of the page
 	void setType (MyDB_PageType toMe);
 	
-	MyDB_PageReaderWriter(MyDB_PageHandle, MyDB_BufferManagerPtr);
+	MyDB_PageReaderWriter(MyDB_PageHandle, MyDB_BufferManagerPtr, MyDB_TableReaderWriter*);
 
-private:
-
-	// ANYTHING ELSE YOU WANT HERE
-	MyDB_PageType pageType;
 	MyDB_PageHandle pageHandle;
 	MyDB_BufferManagerPtr bufferMgrPtr;
+	MyDB_TableReaderWriter* tablerw;
+	PageStuff* pagestuff;
 
+private:
+	// ANYTHING ELSE YOU WANT HERE
+	MyDB_PageType pageType;
 };
 
 class PageStuff{
-
-
+public:
+	int numBytesUsed;
+	char data[0];
 };
-
 #endif

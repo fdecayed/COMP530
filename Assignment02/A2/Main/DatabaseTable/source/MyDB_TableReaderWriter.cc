@@ -36,7 +36,6 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string) {
 }
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr) {
-shared_from_this();
 	return nullptr;
 }
 

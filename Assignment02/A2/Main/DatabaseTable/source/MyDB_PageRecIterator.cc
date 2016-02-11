@@ -4,19 +4,24 @@
 
 using namespace std;
 
-MyDB_PageRecIter :: MyDB_PageRecIter(MyDB_RecordPtr rp,MyDB_PageHandle ph, MyDB_BufferManagerPtr bm){
-	pageHandle = ph;
+MyDB_PageRecIter :: MyDB_PageRecIter(MyDB_RecordPtr rp,MyDB_PageReaderWriter* rw){
+	pagerw = rw;
 	recordPtr = rp;
 	recordSize = rp ->getBinarySize();
-	bufferMgrPtr = bm;
-	pageSize = bm ->getPageSize();
-	currentloc = rp->fromBinary(ph->getBytes());
+	pageSize = rw -> bufferMgrPtr ->getPageSize();
+	currentloc = rw-> pagestuff ->data;
+	currentBytes = 0;
+
 };
 
 void MyDB_PageRecIter :: getNext (){
-	currentloc = recordPtr->fromBinary(currentloc);
+	if(hasNext()){
+		currentloc = recordPtr->fromBinary(currentloc);
+		currentBytes =+ recordPtr->getBinarySize();
+	}
 }
 
-bool MyDB_RecordIterator :: hasNext(){
-	return true;
+bool MyDB_PageRecIter :: hasNext(){
+	if((pagerw->pagestuff-> numBytesUsed)>(pageSize - sizeof(PageStuff)-currentBytes) ) return true;
+	return false;
 }
