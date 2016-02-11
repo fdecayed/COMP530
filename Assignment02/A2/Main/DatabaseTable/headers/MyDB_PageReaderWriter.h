@@ -50,4 +50,5 @@ public:
 	int numBytesUsed;
 	char data[0];
 };
+
 #endif

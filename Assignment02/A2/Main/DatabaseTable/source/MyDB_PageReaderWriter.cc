@@ -3,6 +3,7 @@
 #define PAGE_RW_C
 
 #include "MyDB_PageReaderWriter.h"
+
 MyDB_PageReaderWriter :: MyDB_PageReaderWriter(MyDB_PageHandle ph, MyDB_BufferManagerPtr mp, MyDB_TableReaderWriter* rw){
 	pageHandle = ph;
 	bufferMgrPtr = mp;
