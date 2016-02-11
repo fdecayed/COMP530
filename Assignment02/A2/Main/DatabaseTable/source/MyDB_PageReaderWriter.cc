@@ -20,6 +20,7 @@ void MyDB_PageReaderWriter :: clear () {
 	while(itr->hasNext()){
 		loc = emptyrecord -> toBinary(loc);
 	}
+	pagestuff -> numBytesUsed = 0;
 }
 
 MyDB_PageType MyDB_PageReaderWriter :: getType () {

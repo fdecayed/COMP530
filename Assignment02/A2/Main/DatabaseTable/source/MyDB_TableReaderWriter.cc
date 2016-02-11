@@ -7,6 +7,7 @@
 #include "MyDB_PageReaderWriter.h"
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_TableRecIterator.h"
+#include <iostream>
 using namespace std;
 
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tp, MyDB_BufferManagerPtr bp) {
@@ -16,6 +17,11 @@ MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tp, MyDB_BufferM
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t i) {
+   while(i > tablePtr->lastPage()){
+	   MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, this);
+	   tablePtr -> setLastPage((size_t)(tablePtr->lastPage() + 1));
+	   pageRWs.push_back(temp);
+   }
   return pageRWs[i];	
 }
 
@@ -25,13 +31,17 @@ MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: last () {
+  if(pageRWs.empty()) pageRWs.push_back(MyDB_PageReaderWriter(buffermgrPtr->getPage(tablePtr,0),buffermgrPtr, this));
+  tablePtr -> setLastPage(0);
   return pageRWs.back();
 }
 
 
 void MyDB_TableReaderWriter :: append (MyDB_RecordPtr record) {
+
   if(last().append(record)) return;
   MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, this);
+  tablePtr -> setLastPage((size_t)(tablePtr->lastPage() + 1));
   temp.append(record);
   pageRWs.push_back(temp);
 }
@@ -48,10 +58,12 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string fromMe) {
       append(record);
     }
   }
+
 }
 
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr record) {
+	cout << "tbwr" << "\n";
   return make_shared<MyDB_TableRecIter>(shared_from_this(),record);
 }
 

@@ -9,8 +9,8 @@ MyDB_PageRecIter :: MyDB_PageRecIter(MyDB_RecordPtr rp, MyDB_PageReaderWriter* r
 	pagerw = rw;
 	recordPtr = rp;
 	recordSize = rp ->getBinarySize();
-	pageSize = rw -> bufferMgrPtr ->getPageSize();
 	currentloc = rw-> pagestuff->data;
+	pageSize = rw -> bufferMgrPtr ->getPageSize();
 	currentBytes = 0;
 
 };

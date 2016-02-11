@@ -27,10 +27,12 @@ bool MyDB_TableRecIter::hasNext(){
 }
 
 MyDB_TableRecIter :: MyDB_TableRecIter(MyDB_TableReaderWriterPtr parentPtr,MyDB_RecordPtr recordPtr){
+  cout << "tbwr_4444" << "\n";
   parent = parentPtr;
   record = recordPtr;
   curPage = 0;
   curIt = (*parent)[curPage].getIterator(record);
+  cout << "tbwr_4444" << "\n";
 }
 
 MyDB_TableRecIter::~MyDB_TableRecIter(){}

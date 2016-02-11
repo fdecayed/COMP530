@@ -17,7 +17,6 @@
 int main () {
 
         QUnit::UnitTest qunit(cerr, QUnit::verbose);
-
 	// create the catalog
 	{
 
@@ -27,11 +26,9 @@ int main () {
 		mySchema->appendAtt (make_pair ("secAtt", make_shared <MyDB_IntAttType> ()));
 		mySchema->appendAtt (make_pair ("thirdAtt", make_shared <MyDB_DoubleAttType> ()));
 		mySchema->appendAtt (make_pair ("fourthAtt", make_shared <MyDB_StringAttType> ()));
-
 		// create a pair of tables with this schema
 		MyDB_TablePtr myTable = make_shared <MyDB_Table> ("coolTable", "coolTableFile", mySchema);
 		MyDB_TablePtr yourTable = make_shared <MyDB_Table> ("awesomeTable", "awesomeTableFile", mySchema);
-
 		// and write to the catalog
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
 		myTable->putInCatalog (myCatalog);
@@ -42,6 +39,7 @@ int main () {
 		cout << "\n\n";
 	}
 
+
 	{
 		// loop through all of the tables in there
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
@@ -50,6 +48,8 @@ int main () {
 			cout << e.second << "\n";
 		}
 		cout << "\n\n";
+
+
 	}
 
 	{
@@ -72,21 +72,23 @@ int main () {
 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager> (1024, 16, "tempFile");
 		MyDB_TableReaderWriter supplierTable (myTable, myMgr);
 
+
 		// load it from a text file
 		supplierTable.loadFromTextFile ("supplier.tbl");
 
+
 		// put the supplier table into the catalog
 		myTable->putInCatalog (myCatalog);
+
 	}
 
 	{
-
 		// load up the table supplier table from the catalog
 		MyDB_CatalogPtr myCatalog = make_shared <MyDB_Catalog> ("catFile");
 		map <string, MyDB_TablePtr> allTables = MyDB_Table :: getAllTables (myCatalog);
 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager> (1024, 16, "tempFile");
+		cout << allTables["supplier"]->lastPage() << "\n";
 		MyDB_TableReaderWriter supplierTable (allTables["supplier"], myMgr);
-
 		// now, go to the 37th page and iterate over it
 		MyDB_RecordPtr temp = supplierTable.getEmptyRecord ();
 		MyDB_RecordIteratorPtr myIter = supplierTable[36].getIterator (temp);
@@ -94,7 +96,6 @@ int main () {
 			myIter->getNext ();
 			cout << temp << "\n";
 		}
-
 		cout << "\n\n\n";
 	}
 
@@ -104,11 +105,12 @@ int main () {
 		map <string, MyDB_TablePtr> allTables = MyDB_Table :: getAllTables (myCatalog);
 		MyDB_BufferManagerPtr myMgr = make_shared <MyDB_BufferManager> (1024, 16, "tempFile");
 		MyDB_TableReaderWriter supplierTable (allTables["supplier"], myMgr);
-
+		cout << "begin_ld1111" << "\n";
 		// test the iterator by looping through all of the records in the file
 		MyDB_RecordPtr temp = supplierTable.getEmptyRecord ();
+		cout << "begin_ld2222" << "\n";
 		MyDB_RecordIteratorPtr myIter = supplierTable.getIterator (temp);
-
+		cout << "begin_ld3333" << "\n";
 		// there should be 10000 records
 		int counter = 0;
 		while (myIter->hasNext ()) {
