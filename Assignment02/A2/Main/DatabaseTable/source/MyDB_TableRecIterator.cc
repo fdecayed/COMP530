@@ -10,7 +10,7 @@ void MyDB_TableRecIter::getNext(){
     curIt->getNext();
     return;
   }
-
+  
   else if(&(*parent)[curPage]==&parent->last()) return;
   else {
     curPage++;
