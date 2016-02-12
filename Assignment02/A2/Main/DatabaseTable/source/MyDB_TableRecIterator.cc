@@ -22,17 +22,15 @@ void MyDB_TableRecIter::getNext(){
 
 bool MyDB_TableRecIter::hasNext(){
   if(curIt->hasNext()) return true;
-  for(int tempPage=curPage+1;&(*parent)[tempPage-1]!=&parent->last();tempPage++) if((*parent)[tempPage].getIterator(record)->hasNext()) return true;
+  for(int tempPage=curPage+1;&(*parent)[tempPage-1] != &parent->last();tempPage++) if((*parent)[tempPage].getIterator(record)->hasNext()) return true;
   return false;
 }
 
-MyDB_TableRecIter :: MyDB_TableRecIter(MyDB_TableReaderWriterPtr parentPtr,MyDB_RecordPtr recordPtr){
-  cout << "tbwr_4444" << "\n";
+MyDB_TableRecIter :: MyDB_TableRecIter(MyDB_TableReaderWriter* parentPtr,MyDB_RecordPtr recordPtr){
   parent = parentPtr;
   record = recordPtr;
   curPage = 0;
-  curIt = (*parent)[curPage].getIterator(record);
-  cout << "tbwr_4444" << "\n";
+  curIt = (*parent)[0].getIterator(record);
 }
 
 MyDB_TableRecIter::~MyDB_TableRecIter(){}

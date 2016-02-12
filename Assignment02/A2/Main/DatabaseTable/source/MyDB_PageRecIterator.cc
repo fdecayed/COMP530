@@ -17,13 +17,19 @@ MyDB_PageRecIter :: MyDB_PageRecIter(MyDB_RecordPtr rp, MyDB_PageReaderWriter* r
 
 void MyDB_PageRecIter :: getNext (){
 	if(hasNext()){
-		currentloc = recordPtr->fromBinary(currentloc);
-		currentBytes =+ recordPtr->getBinarySize();
+		recordPtr->fromBinary(pagerw->pagestuff->data+currentBytes);
+		currentBytes += recordPtr->getBinarySize();
 	}
 }
 
 bool MyDB_PageRecIter :: hasNext(){
-	if((pagerw->pagestuff->numBytesUsed)>(pageSize - sizeof(PageStuff)-currentBytes) ) return true;
+	//cout<<"test:"<<pagerw-> pagestuff-> numBytesUsed<<"\n";
+	pagerw->pagestuff =(PageStuff*) pagerw->pageHandle->getBytes();
+	if((pagerw-> pagestuff-> numBytesUsed) > currentBytes ) return true;
+	//cout<<"pagerw-> pagestuff-> numBytesUsed"<<endl;
+	//cout<<pagerw-> pagestuff-> numBytesUsed<<endl;
+	//cout<<"currentBytes"<<endl;
+	//cout<<currentBytes<<endl;
 	return false;
 }
 

@@ -12,11 +12,11 @@ class MyDB_TableRecIter : public MyDB_RecordIterator{
  public:
   void getNext();
   bool hasNext();
-  MyDB_TableRecIter(MyDB_TableReaderWriterPtr,MyDB_RecordPtr);
+  MyDB_TableRecIter(MyDB_TableReaderWriter*,MyDB_RecordPtr);
   ~MyDB_TableRecIter();
 
  private:
-  MyDB_TableReaderWriterPtr parent;
+  MyDB_TableReaderWriter* parent;
   int curPage;
   MyDB_RecordIteratorPtr curIt;
   MyDB_RecordPtr record;

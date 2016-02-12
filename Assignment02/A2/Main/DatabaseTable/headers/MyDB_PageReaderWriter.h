@@ -38,7 +38,7 @@ public:
 	// sets the type of the page
 	void setType (MyDB_PageType toMe);
 	
-	MyDB_PageReaderWriter(MyDB_PageHandle, MyDB_BufferManagerPtr, MyDB_TableReaderWriter*);
+	MyDB_PageReaderWriter(MyDB_PageHandle, MyDB_BufferManagerPtr, MyDB_TableReaderWriter*,bool);
 
 	MyDB_PageHandle pageHandle;
 	MyDB_BufferManagerPtr bufferMgrPtr;

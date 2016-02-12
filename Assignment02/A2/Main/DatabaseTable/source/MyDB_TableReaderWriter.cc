@@ -13,16 +13,23 @@ using namespace std;
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tp, MyDB_BufferManagerPtr bp) {
   buffermgrPtr = bp;
   tablePtr = tp;
-  for(int i=0;i<=tp->lastPage();++i) pageRWs.push_back(MyDB_PageReaderWriter(bp->getPage(tp,i),bp,this));
+  cout<<tablePtr->lastPage()<<"   test\n";
+  for(long i=0;i<=tp->lastPage();++i) {
+	  MyDB_PageReaderWriter temp(bp->getPage(tp,i),bp,this,false);
+	  //cout<<*(int*)temp.pagestuff->data<<endl;
+	  pageRWs.push_back(temp);
+  }
+  //if(!pageRWs.empty()) cout<<pageRWs[0].pagestuff->numBytesUsed<<"\n";
+
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: operator [] (size_t i) {
    while(i > tablePtr->lastPage()){
-	   MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, this);
+	   MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, this,true);
 	   tablePtr -> setLastPage((size_t)(tablePtr->lastPage() + 1));
 	   pageRWs.push_back(temp);
    }
-  return pageRWs[i];	
+  return pageRWs[(int)i];
 }
 
 MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
@@ -31,23 +38,33 @@ MyDB_RecordPtr MyDB_TableReaderWriter :: getEmptyRecord () {
 }
 
 MyDB_PageReaderWriter &MyDB_TableReaderWriter :: last () {
-  if(pageRWs.empty()) pageRWs.push_back(MyDB_PageReaderWriter(buffermgrPtr->getPage(tablePtr,0),buffermgrPtr, this));
-  tablePtr -> setLastPage(0);
+  if(pageRWs.empty()){
+	  pageRWs.push_back(MyDB_PageReaderWriter(buffermgrPtr->getPage(tablePtr,0),buffermgrPtr, this,true));
+	  tablePtr -> setLastPage(0);
+  };
   return pageRWs.back();
 }
 
 
 void MyDB_TableReaderWriter :: append (MyDB_RecordPtr record) {
-
+cout<<"appending: "<<record<<endl;
   if(last().append(record)) return;
-  MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, this);
+  MyDB_PageReaderWriter temp(buffermgrPtr->getPage(tablePtr,tablePtr->lastPage()+1),buffermgrPtr, this,true);
   tablePtr -> setLastPage((size_t)(tablePtr->lastPage() + 1));
   temp.append(record);
   pageRWs.push_back(temp);
+  return;
 }
 
 void MyDB_TableReaderWriter :: loadFromTextFile (string fromMe) {
+	cout<<"pagerws size: "<<pageRWs.size()<<"start loading\n";
   tablePtr->setLastPage(-1);
+
+  for(int i=0;i< pageRWs.size();i++){
+	  pageRWs[i].clear();
+	  cout<<"test"<<endl;
+  }
+
   pageRWs.clear();
   MyDB_RecordPtr record = getEmptyRecord();
   ifstream myfile(fromMe);
@@ -63,8 +80,7 @@ void MyDB_TableReaderWriter :: loadFromTextFile (string fromMe) {
 
 
 MyDB_RecordIteratorPtr MyDB_TableReaderWriter :: getIterator (MyDB_RecordPtr record) {
-	cout << "tbwr" << "\n";
-  return make_shared<MyDB_TableRecIter>(shared_from_this(),record);
+  return make_shared<MyDB_TableRecIter>(this,record);
 }
 
 void MyDB_TableReaderWriter :: writeIntoTextFile (string) {
