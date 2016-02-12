@@ -13,7 +13,7 @@ using namespace std;
 MyDB_TableReaderWriter :: MyDB_TableReaderWriter (MyDB_TablePtr tp, MyDB_BufferManagerPtr bp) {
   buffermgrPtr = bp;
   tablePtr = tp;
-  cout<<tablePtr->lastPage()<<"   test\n";
+  //cout<<tablePtr->lastPage()<<"   test\n";
   for(long i=0;i<=tp->lastPage();++i) {
     MyDB_PageReaderWriter temp(bp->getPage(tp,i),bp,this,false);
     //cout<<*(int*)temp.pagestuff->data<<endl;
