@@ -132,11 +132,44 @@ vector <MyDB_PageReaderWriter> mergeIntoList (MyDB_BufferManagerPtr parent, MyDB
 	return returnVal;
 }
 	
-void sort (int, MyDB_TableReaderWriter &, MyDB_TableReaderWriter &, 
-	function <bool ()>, MyDB_RecordPtr, MyDB_RecordPtr) {
+void sort (int runsize, MyDB_TableReaderWriter & sortMe, MyDB_TableReaderWriter &sortIntoMe,
+	function <bool ()> comparator, MyDB_RecordPtr lhs, MyDB_RecordPtr rhs) {
 
 // your stuff here!!
 
+	MyDB_RecordPtr rec = sortMe.getEmptyRecord ();
+
+	int numofrun = sortMe.getNumPages()/runsize;
+	if(sortMe.getNumPages()%runsize != 0) numofrun += 1;
+
+	vector<MyDB_RecordIteratorAltPtr> runIters(numofrun);
+	vector<MyDB_PageReaderWriter> pageRWs(0);
+
+	for(int i=0; i < sortMe.getNumPages(); i++){
+
+			MyDB_RecordIteratorAltPtr altreciter = sortMe.getIteratorAlt (i,i);
+			MyDB_PageReaderWriter singlepage = MyDB_PageReaderWriter (sortMe.getBufferMgr());
+			altreciter.getCurrent (rec);
+			singlepage.append(rec);
+			while(altreciter.advance()){
+				altreciter.getCurrent (rec);
+				singlepage.append(rec);
+			}
+			MyDB_PageReaderWriterPtr sortedpage = singlepage.sort (comparator, lhs, rhs);
+			MyDB_RecordIteratorAltPtr pagerwlistIter = MyDB_PageListIteratorAlt (pageRWs);
+			pageRWs = mergeIntoList (sortMe.getBufferMgr(), pagerwlistIter, sortedpage.getIteratorAlt (), comparator, lhs, rhs);
+			if((i+1)%runsize == 0){
+				MyDB_RecordIteratorAltPtr runIter = MyDB_PageListIteratorAlt(pageRWs);
+				runIters[(i+1)/runsize] = runIter;
+				pageRWs.clear();
+			}
+			if(sortMe.getNumPages()%runsize != 0 && (i+1) == sortMe.getNumPages()){
+				MyDB_RecordIteratorAltPtr runIter = MyDB_PageListIteratorAlt(pageRWs);
+				runIters[numofrun] = runIter;
+			}
+	}
+
+	mergeIntoFile (sortIntoMe, runIters, comparator, lhs, rhs);
 }
 
 #endif
