@@ -162,6 +162,9 @@ int main () {
 		MyDB_RecordPtr rec1 = sortedTable.getEmptyRecord ();
 		MyDB_RecordPtr rec2 = otherSortedTable.getEmptyRecord ();
 
+		// and get a comparator
+		function <bool ()> myComp = buildRecordComparator (rec1, rec2, "[acctbal]");
+
 		// get two iterators
                 MyDB_RecordIteratorAltPtr myIterOne = sortedTable.getIteratorAlt ();
                 MyDB_RecordIteratorAltPtr myIterTwo = otherSortedTable.getIteratorAlt ();
@@ -174,15 +177,13 @@ int main () {
 			// get the two records
                         myIterOne->getCurrent (rec1);
                         myIterTwo->getCurrent (rec2);
-			stringstream ss1;
-			stringstream ss2;
 
-			// convert to strings and make sure they match
-			ss1 << rec1;
-			ss2 << rec2;
-			string string1 = ss1.str (), string2 = ss2.str ();
-			if (string1 == string2)
-				matches++;
+			if (!myComp ()) {
+                        	myIterOne->getCurrent (rec2);
+                        	myIterTwo->getCurrent (rec1);
+				if (!myComp ())
+					matches++;
+			}
                 }
 
                 QUNIT_IS_EQUAL (matches, 320000);

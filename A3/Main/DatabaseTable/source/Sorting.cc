@@ -135,41 +135,33 @@ vector <MyDB_PageReaderWriter> mergeIntoList (MyDB_BufferManagerPtr parent, MyDB
 void sort (int runsize, MyDB_TableReaderWriter & sortMe, MyDB_TableReaderWriter &sortIntoMe,
 	function <bool ()> comparator, MyDB_RecordPtr lhs, MyDB_RecordPtr rhs) {
 
-// your stuff here!!
+	queue<MyDB_RecordIteratorAltPtr> curRun;
+	vector<MyDB_RecordIteratorAltPtr> runs;
+	MyDB_BufferManagerPtr parent = sortMe.getBufferMgr();
 
-	MyDB_RecordPtr rec = sortMe.getEmptyRecord ();
+	// sort phase
+	for(int i=0;i<sortMe.getNumPages();i++){
 
-	int numofrun = sortMe.getNumPages()/runsize;
-	if(sortMe.getNumPages()%runsize != 0) numofrun += 1;
+		// load a sorted page
+		curRun.push(sortMe[i].sort(comparator,lhs,rhs)->getIteratorAlt());
 
-	vector<MyDB_RecordIteratorAltPtr> runIters(numofrun);
-	vector<MyDB_PageReaderWriter> pageRWs(0);
-
-	for(int i=0; i < sortMe.getNumPages(); i++){
-
-			MyDB_RecordIteratorAltPtr altreciter = sortMe.getIteratorAlt (i,i);
-			MyDB_PageReaderWriter singlepage = MyDB_PageReaderWriter (sortMe.getBufferMgr());
-			altreciter.getCurrent (rec);
-			singlepage.append(rec);
-			while(altreciter.advance()){
-				altreciter.getCurrent (rec);
-				singlepage.append(rec);
+		// if runsize pages loaded, merge them into a run
+		if(curRun.size()==runsize||i==sortMe.getNumPages()-1){
+			while(curRun.size()>1){
+				auto first = curRun.front();
+				curRun.pop();
+				auto second = curRun.front();
+				curRun.pop();
+				auto mergeTmp = mergeIntoList(parent,first,second,comparator,lhs,rhs);
+				curRun.push(getIteratorAlt(mergeTmp));
 			}
-			MyDB_PageReaderWriterPtr sortedpage = singlepage.sort (comparator, lhs, rhs);
-			MyDB_RecordIteratorAltPtr pagerwlistIter = MyDB_PageListIteratorAlt (pageRWs);
-			pageRWs = mergeIntoList (sortMe.getBufferMgr(), pagerwlistIter, sortedpage.getIteratorAlt (), comparator, lhs, rhs);
-			if((i+1)%runsize == 0){
-				MyDB_RecordIteratorAltPtr runIter = MyDB_PageListIteratorAlt(pageRWs);
-				runIters[(i+1)/runsize] = runIter;
-				pageRWs.clear();
-			}
-			if(sortMe.getNumPages()%runsize != 0 && (i+1) == sortMe.getNumPages()){
-				MyDB_RecordIteratorAltPtr runIter = MyDB_PageListIteratorAlt(pageRWs);
-				runIters[numofrun] = runIter;
-			}
+			runs.push_back(curRun.front());
+			curRun.pop();
+		}
 	}
 
-	mergeIntoFile (sortIntoMe, runIters, comparator, lhs, rhs);
+	// merge all runs
+	mergeIntoFile (sortIntoMe, runs, comparator, lhs, rhs);
 }
 
 #endif
